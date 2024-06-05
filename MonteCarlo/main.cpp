@@ -1,28 +1,41 @@
-#include <ArithmeticAsianCall.h>
-#include <GeometricAsianCall.h>
+
+#include <AsianOption.h>
 #include <BSModel.h>
+#include <EuropeanOption.h>
 #include <iostream>
+using namespace std;
 
 int main()
 {
-    double S0=100.0, r=0.03, sigma=0.2, epsilon=0.001;
+    double S0=100., r=0.03, sigma=0.2;
     BSModel Model(S0,r,sigma);
 
-    double T=1.0/12.0, K=100.0;
-    int m=30;
-    ArithmeticAsianCall ArithmeticAsianCallOption(T,K,m);
-    GeometricAsianCall GeometricAsianCallOption(T,K,m);
+    double T=0.5, K=100.0;
+    int m = 30;
 
     long N=30000;
-    std::cout << "Arithmetic Asian Call Option Price = " << ArithmeticAsianCallOption.PriceByMC(Model,N, epsilon) << std::endl;
-    std::cout << "Pricing Error = " << ArithmeticAsianCallOption.get_pricing_error() << std::endl;
-    std::cout << "Delta = " << ArithmeticAsianCallOption.get_delta() << std::endl;
-    std::cout << "Gamma = " << ArithmeticAsianCallOption.get_gamma() << std::endl;
+    double epsilon=0.001;
+    ArithmeticAsianCall Option1(T,K,m);
+    Option1.PriceByMC(Model,N,epsilon) ;
+    cout << "Arithmetic Call:" << endl;
+    cout << "Option Price = " << Option1.get_price() << endl
+         << "Pricing Error = " << Option1.get_pricing_error() << endl
+         << "        delta = " << Option1.get_delta() << endl
+         << "          rho = " << Option1.get_rho() << endl
+         << "         vega = " << Option1.get_vega() << endl
+         << "        theta = " << Option1.get_theta() << endl
+         << "        gamma = " << Option1.get_gamma() << endl;
 
-    std::cout << "Geometric Asian Call Option Price = " << GeometricAsianCallOption.PriceByMC(Model,N, epsilon) << std::endl;
-    std::cout << "Pricing Error = " << GeometricAsianCallOption.get_pricing_error() << std::endl;
-    std::cout << "Delta = " << GeometricAsianCallOption.get_delta() << std::endl;
-    std::cout << "Gamma = " << GeometricAsianCallOption.get_gamma() << std::endl;
+    EurCall Option2(T,K);
+    cout << "European Call:" << endl;
+    Option2.PriceByMC(Model,N,epsilon);
+    cout << "Option Price = " << Option2.get_price() << endl
+         << "Pricing Error = " << Option2.get_pricing_error() << endl
+         << "        delta = " << Option2.get_delta() << endl
+         << "          rho = " << Option2.get_rho() << endl
+         << "         vega = " << Option2.get_vega() << endl
+         << "        theta = " << Option2.get_theta() << endl
+         << "        gamma = " << Option2.get_gamma() << endl;
 
     return 0;
 }

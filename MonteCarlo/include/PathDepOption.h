@@ -9,7 +9,7 @@
 class PathDepOption
 {
 private:
-    double T, Price, PricingError, delta, gamma;
+    double T, Price, PricingError, delta, rho, vega, theta, gamma;
     int m;
 public:
     double PriceByMC(BSModel Model, long N, double epsilon);
@@ -20,15 +20,7 @@ public:
     }
 
     void set_t(const double t) {
-        this->T = t;
-    }
-
-    int get_m() const {
-        return m;
-    }
-
-    void set_m(const int m) {
-        this->m = m;
+        T = t;
     }
 
     double get_price() const {
@@ -55,12 +47,44 @@ public:
         this->delta = delta;
     }
 
+    double get_rho() const {
+        return rho;
+    }
+
+    void set_rho(const double rho) {
+        this->rho = rho;
+    }
+
+    double get_vega() const {
+        return vega;
+    }
+
+    void set_vega(const double vega) {
+        this->vega = vega;
+    }
+
+    double get_theta() const {
+        return theta;
+    }
+
+    void set_theta(const double theta) {
+        this->theta = theta;
+    }
+
     double get_gamma() const {
         return gamma;
     }
 
     void set_gamma(const double gamma) {
         this->gamma = gamma;
+    }
+
+    int get_m() const {
+        return m;
+    }
+
+    void set_m(const int m) {
+        this->m = m;
     }
 };
 
