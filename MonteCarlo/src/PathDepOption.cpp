@@ -12,7 +12,7 @@ void Rescale(SamplePath& S, double x)
 }
 
 double PathDepOption::PriceByMC(BSModel Model, long N, double epsilon) {
-    double H = 0.0, Hsq = 0.0, Heps = 0.0;
+    double H = 0.0, Hsq = 0.0, Heps = 0.0, Hmeps = 0.0;
     SamplePath S(m);
     for(long i=0; i<N; i++) {
         Model.GenerateSamplePath(T, m, S);
@@ -20,9 +20,12 @@ double PathDepOption::PriceByMC(BSModel Model, long N, double epsilon) {
         Hsq = (i*Hsq + pow(Payoff(S),2.0)) / (i+1.0);
         Rescale(S,1.0+epsilon);
         Heps = (i*Heps + Payoff(S)) / (i+1.0);
+        Rescale(S,(1.0-epsilon)/(1.0+epsilon));
+        Hmeps = (i*Hmeps + Payoff(S)) / (i+1.0);
     }
     Price = exp(-Model.get_r()*T)*H;
     PricingError = exp(-Model.get_r()*T)*sqrt(Hsq - H*H) / sqrt(N-1.0);
     delta = exp(-Model.get_r()*T)*(Heps-H)/(Model.get_s0()*epsilon);
+    gamma =  exp(-Model.get_r()*T) * (Heps - 2*H + Hmeps) / ((Model.get_s0()*epsilon)*(Model.get_s0()*epsilon));
     return Price;
 }
