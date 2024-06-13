@@ -2,10 +2,11 @@
 // Created by Rakesh Bali on 05/06/2024.
 //
 
-#include "PathDepOption.h"
+#include <PathDepOption.h>
+#include <AsianOption.h>
 
 void GetZ(std::vector<double>& Z, SamplePath& S, double S0,
-            double r, double sigma, double dt) {
+          double r, double sigma, double dt) {
     int m = S.size();
     Z[0] = (log(S[0]/S0) - (r-0.5*sigma*sigma)*dt) / (sigma * sqrt(dt));
     for(int i=1; i<m; i++) {
@@ -64,4 +65,12 @@ double PathDepOption::PriceByMC(BSModel Model, long N, double epsilon) {
     rho = (exp(-r*(1+epsilon)*T) * Hrho - exp(-r*T) * H) / r*(epsilon);
     theta = -(exp(-r*T*(1+epsilon)) * Htheta - (exp(-r*T) * H))/ T*(epsilon);
     return Price;
+}
+
+double PathDepOption::PriceByVarRedMC(BSModel Model, long N, PathDepOption &CVOption) {
+    DifferenceOfOptions VarRedOpt(T,m,this,&CVOption);
+    double price = VarRedOpt.PriceByMC(Model,N, 0.0001) + CVOption.PriceByBSFormula(Model);
+    set_price(price);
+    set_pricing_error(VarRedOpt.get_pricing_error());
+    return price;
 }

@@ -10,6 +10,7 @@ add_library(PathDepOption SHARED src/PathDepOption.cpp)
 add_library(AsianOption SHARED src/AsianOption.cpp)
 add_library(EuropeanOption SHARED src/EuropeanOption.cpp)
 
+target_link_libraries(AsianOption EuropeanOption)
 target_link_libraries(PathDepOption BSModel)
 
 add_executable(MonteCarlo main.cpp)

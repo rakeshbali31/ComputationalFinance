@@ -12,8 +12,12 @@ private:
     double T, Price, PricingError, delta, rho, vega, theta, gamma;
     int m;
 public:
+    virtual ~PathDepOption() = default;
+
     double PriceByMC(BSModel Model, long N, double epsilon);
     virtual double Payoff(SamplePath& S)=0;
+    double PriceByVarRedMC(BSModel Model, long N, PathDepOption& CVOption);
+    virtual double PriceByBSFormula(BSModel Model) {return 0.0;}
 
     double get_t() const {
         return T;
